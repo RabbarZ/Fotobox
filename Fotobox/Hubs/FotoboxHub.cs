@@ -5,9 +5,9 @@ namespace Fotobox.Hubs
 {
     public class FotoboxHub : Hub
     {
-        public async Task SendMessage(string function)
+        public async Task SendMessage(string parameter)
         {
-            await this.Clients.All.SendAsync("ReceiveMessage", function);
+            await this.Clients.All.SendAsync("ReceiveMessage", parameter);
         }
     }
 }
