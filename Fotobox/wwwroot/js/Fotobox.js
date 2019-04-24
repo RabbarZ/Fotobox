@@ -1,6 +1,6 @@
 ﻿"use strict";
 
-var connection = new signalR.HubConnectionBuilder().withUrl("/fotoboxHub").build();
+var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:44391/fotoboxHub").build();
 
 
 connection.on("ReceiveMessage", function (parameter) {
@@ -10,4 +10,10 @@ connection.on("ReceiveMessage", function (parameter) {
 
 connection.start().then(function () {
     console.log("connected");
+}).catch(function (err) {
+    return console.log(err.toString());
 });
+
+//connection.start().then(function () {
+//    console.log("connected");
+//});
