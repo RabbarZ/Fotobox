@@ -23,7 +23,7 @@ namespace Fotobox.Controllers
     public async Task<IActionResult> Admin()
     {
       //var hubContext = GlobalHost.ConnectionManager.GetHubContext<MyHub>();
-      await this.hubContext.Clients.All.SendCoreAsync("SendMessage", new object[] { "hello world" });
+      await this.hubContext.Clients.All.SendCoreAsync("Countdown", new object[] { });
       return this.View();
     }
   }

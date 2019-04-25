@@ -3,9 +3,8 @@
 var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:44391/fotoboxHub").build();
 
 
-connection.on("ReceiveMessage", function (parameter) {
-    console.log(parameter);
-    document.getElementById("text").innerHTML = parameter;
+connection.on("Countdown", function () {
+    this.StartTimer();
 });
 
 connection.start().then(function () {
@@ -14,6 +13,15 @@ connection.start().then(function () {
     return console.log(err.toString());
 });
 
-//connection.start().then(function () {
-//    console.log("connected");
-//});
+
+function StartTimer() {
+    var timeLeft = 3;
+    var downloadTimer = setInterval(function () {
+        document.getElementById("countdown").innerHTML = timeLeft + " seconds remaining";
+        timeLeft -= 1;
+        if (timeLeft <= 0) {
+            clearInterval(downloadTimer);
+            document.getElementById("countdown").innerHTML = "Finished";
+        }
+    }, 1000);
+}
