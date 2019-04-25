@@ -36,9 +36,25 @@ namespace Fotobox.Controllers
       return "wrong";
     }
 
-    private void Execute()
+    //[HttpGet]
+    //public ActionResult<string> SavePicture()
+    //{
+    //  if (!this.instance.IsLocked)
+    //  {
+    //    this.instance.IsLocked = true;
+    //    var thread = new Thread(this.Execute);
+    //    thread.Start();
+    //    return "asd";
+    //  }
+
+    //  return "wrong";
+    //}
+
+    private async void Execute()
     {
-      Thread.Sleep(10000);
+      await this.hubContext.Clients.All.SendCoreAsync("Countdown", new object[] { });
+      Thread.Sleep(4000);
+      await this.hubContext.Clients.All.SendCoreAsync("ReloadPicture", new object[] { });
       this.instance.IsLocked = false;
     }
   }

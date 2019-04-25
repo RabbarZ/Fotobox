@@ -6,12 +6,6 @@ namespace Fotobox.Models
   {
     public bool IsLocked { get; set; }
 
-    //private static ActionSingleton instance;
-
-    //public ActionSingleton Instance => instance ?? (instance = new ActionSingleton());
-
-    //private ActionSingleton()
-    //{
-    //}
+    public bool HasUnsavedPicture { get; set; }
   }
 }

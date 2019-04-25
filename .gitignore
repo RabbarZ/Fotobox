@@ -2,4 +2,10 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/Fotobox/v15/Server/sqlite3
+/.vs
+*.suo
+*.user
+_ReSharper.*
+bin
+obj
+packages

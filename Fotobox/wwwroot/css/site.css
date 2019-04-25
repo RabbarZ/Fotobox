@@ -1,4 +1,14 @@
-﻿#countdown {
-    display: inline;
-    margin: auto;
+﻿body {
+    font-family: sans-serif;
+}
+
+#countdown {
+    display: block;
+    margin: 0 auto;
+    font-size: 50px;
+}
+
+#capture {
+    display: block;
+    margin: auto auto;
 }
