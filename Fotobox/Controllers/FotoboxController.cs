@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Fotobox.Controllers
 {
-  [Route("api/[action]")]
+  [Route("api/[controller]/[action]")]
   [ApiController]
   public class FotoboxController : ControllerBase
   {
@@ -36,19 +36,19 @@ namespace Fotobox.Controllers
       return "wrong";
     }
 
-    //[HttpGet]
-    //public ActionResult<string> SavePicture()
-    //{
-    //  if (!this.instance.IsLocked)
-    //  {
-    //    this.instance.IsLocked = true;
-    //    var thread = new Thread(this.Execute);
-    //    thread.Start();
-    //    return "asd";
-    //  }
+    [HttpGet]
+    public ActionResult<string> SavePicture()
+    {
+      if (!this.instance.IsLocked)
+      {
+        this.instance.IsLocked = true;
+        var thread = new Thread(this.Execute);
+        thread.Start();
+        return "asd";
+      }
 
-    //  return "wrong";
-    //}
+      return "wrong";
+    }
 
     private async void Execute()
     {
