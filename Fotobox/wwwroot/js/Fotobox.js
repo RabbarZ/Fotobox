@@ -9,8 +9,15 @@ connection.on("Countdown", function () {
 
 connection.on("ReloadPicture", function () {
     //document.getElementById("countdown").innerHTML = "realoaded the mofogger";
-    document.getElementById("capture").src = "http://localhost:5513/preview.jpg";
-    document.getElementById("capture").src = "http://digicamcontrol.com/user/themes/woo/images/footer-logo.png";
+    var element = document.getElementById("picture");
+    element.src = "http://localhost:5513/preview.jpg";
+    element.alt = "Fotobox Foto";
+});
+
+connection.on("Reset", function (text) {
+    var element = document.getElementById("countdown");
+    element.innerHTML = text;
+    FadeOutText(element);
 });
 
 connection.start().then(function () {
@@ -33,4 +40,18 @@ function StartTimer() {
             document.getElementById("countdown").innerHTML = "";
         }
     }, 1000);
+}
+
+function FadeOutText(fadeTarget) {
+    var fadeEffect = setInterval(function () {
+        if (!fadeTarget.style.opacity) {
+            fadeTarget.style.opacity = 1;
+        }
+        if (fadeTarget.style.opacity > 0) {
+            fadeTarget.style.opacity -= 0.1;
+        } else {
+            clearInterval(fadeEffect);
+            document.getElementById("picture").src = "";
+        }
+    }, 200);
 }
