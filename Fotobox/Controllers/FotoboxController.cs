@@ -5,7 +5,6 @@ using System.Net.Http.Headers;
 using System.Threading;
 using Fotobox.Hubs;
 using Fotobox.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
@@ -18,14 +17,12 @@ namespace Fotobox.Controllers
     //private DateTime date;
     private readonly IHubContext<FotoboxHub, IFotoboxClient> hubContext;
     private readonly IActionSingleton instance;
-    private readonly IHostingEnvironment hostingEnvironment;
     private readonly IHttpClientFactory clientFactory;
 
     public FotoboxController(IHubContext<FotoboxHub, IFotoboxClient> hubContext, IActionSingleton instance, IHostingEnvironment hostingEnvironment, IHttpClientFactory client)
     {
       this.hubContext = hubContext;
       this.instance = instance;
-      this.hostingEnvironment = hostingEnvironment;
       this.clientFactory = client;
     }
 
@@ -41,14 +38,17 @@ namespace Fotobox.Controllers
 
       var thread = new Thread(async () =>
       {
-
+        // save cached photo
         if (!string.IsNullOrEmpty(this.instance.Picture))
         {
-          if (Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\Hoellefoescht\\Pictures"))
-            System.IO.File.Copy(this.instance.Picture, Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\Hoellefoescht\\Pictures");
+          var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Hoellefaescht\\Pictures");
+          if (!Directory.Exists(path))
+          {
+            Directory.CreateDirectory(path);
+          }
+          System.IO.File.Copy(this.instance.Picture, path);
           await this.hubContext.Clients.All.Reset("Speichern...");
           this.instance.Picture = string.Empty;
-          this.instance.IsLocked = false;
         }
 
         await this.hubContext.Clients.All.Countdown();
@@ -63,8 +63,11 @@ namespace Fotobox.Controllers
         client.DefaultRequestHeaders.Accept.Add(
           new MediaTypeWithQualityHeaderValue("application/json"));
 
-        var response = await client.GetAsync($"/?slc=capture&param1={DateTime.Now.ToString("dd-MM-yyyy")}&param2={DateTime.Now.ToString("HH-mm-ss")}");
-        this.instance.Picture = "picture path";
+        var date = DateTime.Now.ToString("dd-MM-yyyy");
+        var time = DateTime.Now.ToString("HH-mm-ss");
+
+        var response = await client.GetAsync($"/?slc=capture&param1={date}&param2={time}");
+        this.instance.Picture = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), $"{date}_{time}");
 
         if (!response.IsSuccessStatusCode)
         {
@@ -77,7 +80,7 @@ namespace Fotobox.Controllers
         await this.hubContext.Clients.All.ReloadPicture();
 
         this.instance.IsLocked = false;
-        //await this.hubContext.Clients.All.SendCoreAsync("SaveDeletePicture", new object[] { });
+        //await this.hubContext.Clients.All.SendAsync("SaveDeletePicture", });
       });
 
       thread.Start();
@@ -97,12 +100,16 @@ namespace Fotobox.Controllers
       {
         if (!string.IsNullOrEmpty(this.instance.Picture))
         {
-          if (Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\Hoellefoescht\\Pictures"))
-            System.IO.File.Copy(this.instance.Picture, Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\Hoellefoescht\\Pictures");
+          var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Hoellefaescht\\Pictures");
+          if (!Directory.Exists(path))
+          {
+            Directory.CreateDirectory(path);
+          }
+          System.IO.File.Copy(this.instance.Picture, path);
           await this.hubContext.Clients.All.Reset("Speichern...");
           this.instance.Picture = string.Empty;
-          this.instance.IsLocked = false;
         }
+        this.instance.IsLocked = false;
       });
 
       thread.Start();
@@ -122,12 +129,16 @@ namespace Fotobox.Controllers
       {
         if (!string.IsNullOrEmpty(this.instance.Picture))
         {
-          if (Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\Hoellefoescht\\Deleted"))
-            System.IO.File.Copy(this.instance.Picture, Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\Hoellefoescht\\Deleted");
+          var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Hoellefaescht\\Deleted");
+          if (!Directory.Exists(path))
+          {
+            Directory.CreateDirectory(path);
+          }
+          System.IO.File.Copy(this.instance.Picture, path);
           await this.hubContext.Clients.All.Reset("Löschen...");
           this.instance.Picture = string.Empty;
-          this.instance.IsLocked = false;
         }
+          this.instance.IsLocked = false;
       });
 
       thread.Start();
