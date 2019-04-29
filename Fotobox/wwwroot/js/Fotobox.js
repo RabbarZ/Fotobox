@@ -1,6 +1,6 @@
 ﻿"use strict";
 
-var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:44391/fotoboxHub").build();
+var connection = new signalR.HubConnectionBuilder().withUrl("/fotoboxHub").build();
 
 
 connection.on("Countdown", function () {

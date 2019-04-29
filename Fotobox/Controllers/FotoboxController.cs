@@ -5,7 +5,6 @@ using System.Net.Http.Headers;
 using System.Threading;
 using Fotobox.Hubs;
 using Fotobox.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
@@ -39,18 +38,21 @@ namespace Fotobox.Controllers
 
       var thread = new Thread(async () =>
       {
-
+        // save cached photo
         if (!string.IsNullOrEmpty(this.instance.Picture))
         {
           var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Hoellefaescht\\Pictures");
-          if (Directory.Exists(path))
-            System.IO.File.Copy(this.instance.Picture, path);
-          await this.hubContext.Clients.All.SendCoreAsync("Reset", new object[] { "Speichern..." });
+          if (!Directory.Exists(path))
+          {
+            Directory.CreateDirectory(path);
+          }
+          System.IO.File.Copy(this.instance.Picture, path);
+          await this.hubContext.Clients.All.SendAsync("Reset", "Speichern...");
           this.instance.Picture = string.Empty;
           this.instance.IsLocked = false;
         }
 
-        await this.hubContext.Clients.All.SendCoreAsync("Countdown", new object[] { });
+        await this.hubContext.Clients.All.SendAsync("Countdown");
         Thread.Sleep(4000);
 
         // Take picture with DigiCamControl (name is date & time)
@@ -67,16 +69,16 @@ namespace Fotobox.Controllers
 
         if (!response.IsSuccessStatusCode)
         {
-          await this.hubContext.Clients.All.SendCoreAsync("Reset", new object[] { string.Empty });
+          await this.hubContext.Clients.All.SendAsync("Reset", string.Empty);
         }
 
         var content = response.Content;
 
         Thread.Sleep(2000);
-        await this.hubContext.Clients.All.SendCoreAsync("ReloadPicture", new object[] { });
+        await this.hubContext.Clients.All.SendAsync("ReloadPicture");
 
         this.instance.IsLocked = false;
-        //await this.hubContext.Clients.All.SendCoreAsync("SaveDeletePicture", new object[] { });
+        //await this.hubContext.Clients.All.SendAsync("SaveDeletePicture", });
       });
 
       thread.Start();
@@ -97,9 +99,12 @@ namespace Fotobox.Controllers
         if (!string.IsNullOrEmpty(this.instance.Picture))
         {
           var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Hoellefaescht\\Pictures");
-          if (Directory.Exists(path))
-            System.IO.File.Copy(this.instance.Picture, path);
-          await this.hubContext.Clients.All.SendCoreAsync("Reset", new object[] { "Speichern..." });
+          if (!Directory.Exists(path))
+          {
+            Directory.CreateDirectory(path);
+          }
+          System.IO.File.Copy(this.instance.Picture, path);
+          await this.hubContext.Clients.All.SendAsync("Reset", "Speichern...");
           this.instance.Picture = string.Empty;
           this.instance.IsLocked = false;
         }
@@ -123,9 +128,12 @@ namespace Fotobox.Controllers
         if (!string.IsNullOrEmpty(this.instance.Picture))
         {
           var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Hoellefaescht\\Deleted");
-          if (Directory.Exists(path))
-            System.IO.File.Copy(this.instance.Picture, path);
-          await this.hubContext.Clients.All.SendCoreAsync("Reset", new object[] { "Löschen..." });
+          if (!Directory.Exists(path))
+          {
+            Directory.CreateDirectory(path);
+          }
+          System.IO.File.Copy(this.instance.Picture, path);
+          await this.hubContext.Clients.All.SendAsync("Reset", "Löschen...");
           this.instance.Picture = string.Empty;
           this.instance.IsLocked = false;
         }
