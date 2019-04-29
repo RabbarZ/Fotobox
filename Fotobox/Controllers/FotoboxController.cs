@@ -18,14 +18,12 @@ namespace Fotobox.Controllers
     //private DateTime date;
     private readonly IHubContext<FotoboxHub> hubContext;
     private readonly IActionSingleton instance;
-    private readonly IHostingEnvironment hostingEnvironment;
     private readonly IHttpClientFactory clientFactory;
 
-    public FotoboxController(IHubContext<FotoboxHub> hubContext, IActionSingleton instance, IHostingEnvironment hostingEnvironment, IHttpClientFactory client)
+    public FotoboxController(IHubContext<FotoboxHub> hubContext, IActionSingleton instance, IHttpClientFactory client)
     {
       this.hubContext = hubContext;
       this.instance = instance;
-      this.hostingEnvironment = hostingEnvironment;
       this.clientFactory = client;
     }
 
@@ -44,8 +42,9 @@ namespace Fotobox.Controllers
 
         if (!string.IsNullOrEmpty(this.instance.Picture))
         {
-          if (Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\Hoellefoescht\\Pictures"))
-            System.IO.File.Copy(this.instance.Picture, Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\Hoellefoescht\\Pictures");
+          var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Hoellefaescht\\Pictures");
+          if (Directory.Exists(path))
+            System.IO.File.Copy(this.instance.Picture, path);
           await this.hubContext.Clients.All.SendCoreAsync("Reset", new object[] { "Speichern..." });
           this.instance.Picture = string.Empty;
           this.instance.IsLocked = false;
@@ -97,8 +96,9 @@ namespace Fotobox.Controllers
       {
         if (!string.IsNullOrEmpty(this.instance.Picture))
         {
-          if (Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\Hoellefoescht\\Pictures"))
-            System.IO.File.Copy(this.instance.Picture, Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\Hoellefoescht\\Pictures");
+          var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Hoellefaescht\\Pictures");
+          if (Directory.Exists(path))
+            System.IO.File.Copy(this.instance.Picture, path);
           await this.hubContext.Clients.All.SendCoreAsync("Reset", new object[] { "Speichern..." });
           this.instance.Picture = string.Empty;
           this.instance.IsLocked = false;
@@ -122,8 +122,9 @@ namespace Fotobox.Controllers
       {
         if (!string.IsNullOrEmpty(this.instance.Picture))
         {
-          if (Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\Hoellefoescht\\Deleted"))
-            System.IO.File.Copy(this.instance.Picture, Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\Hoellefoescht\\Deleted");
+          var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Hoellefaescht\\Deleted");
+          if (Directory.Exists(path))
+            System.IO.File.Copy(this.instance.Picture, path);
           await this.hubContext.Clients.All.SendCoreAsync("Reset", new object[] { "Löschen..." });
           this.instance.Picture = string.Empty;
           this.instance.IsLocked = false;
