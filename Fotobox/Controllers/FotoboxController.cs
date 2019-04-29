@@ -49,7 +49,6 @@ namespace Fotobox.Controllers
           System.IO.File.Copy(this.instance.Picture, path);
           await this.hubContext.Clients.All.SendAsync("Reset", "Speichern...");
           this.instance.Picture = string.Empty;
-          this.instance.IsLocked = false;
         }
 
         await this.hubContext.Clients.All.SendAsync("Countdown");
@@ -64,8 +63,11 @@ namespace Fotobox.Controllers
         client.DefaultRequestHeaders.Accept.Add(
           new MediaTypeWithQualityHeaderValue("application/json"));
 
-        var response = await client.GetAsync($"/?slc=capture&param1={DateTime.Now.ToString("dd-MM-yyyy")}&param2={DateTime.Now.ToString("HH-mm-ss")}");
-        this.instance.Picture = "picture path";
+        var date = DateTime.Now.ToString("dd-MM-yyyy");
+        var time = DateTime.Now.ToString("HH-mm-ss");
+
+        var response = await client.GetAsync($"/?slc=capture&param1={date}&param2={time}");
+        this.instance.Picture = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), $"{date}_{time}");
 
         if (!response.IsSuccessStatusCode)
         {
@@ -106,8 +108,8 @@ namespace Fotobox.Controllers
           System.IO.File.Copy(this.instance.Picture, path);
           await this.hubContext.Clients.All.SendAsync("Reset", "Speichern...");
           this.instance.Picture = string.Empty;
-          this.instance.IsLocked = false;
         }
+        this.instance.IsLocked = false;
       });
 
       thread.Start();
@@ -135,8 +137,8 @@ namespace Fotobox.Controllers
           System.IO.File.Copy(this.instance.Picture, path);
           await this.hubContext.Clients.All.SendAsync("Reset", "Löschen...");
           this.instance.Picture = string.Empty;
-          this.instance.IsLocked = false;
         }
+          this.instance.IsLocked = false;
       });
 
       thread.Start();
