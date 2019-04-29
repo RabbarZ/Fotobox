@@ -1,13 +1,10 @@
 ﻿using System.Threading.Tasks;
+using Fotobox.Models;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Fotobox.Hubs
 {
-    public class FotoboxHub : Hub
+    public class FotoboxHub : Hub<IFotoboxClient>
     {
-        public async Task SendMessage(string parameter)
-        {
-            await this.Clients.All.SendAsync("ReceiveMessage", parameter);
-        }
     }
 }
