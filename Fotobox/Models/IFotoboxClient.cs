@@ -7,7 +7,7 @@ namespace Fotobox.Models
 {
     public interface IFotoboxClient
     {
-        Task Countdown();
+        Task ChangeCountdown(int number);
 
         Task ReloadPicture();
 

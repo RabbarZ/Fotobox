@@ -56,9 +56,6 @@ namespace Fotobox.Controllers
                     this.singleton.PicturePath = string.Empty;
                 }
 
-                await this.hubContext.Clients.All.Countdown();
-                Thread.Sleep(4000);
-
                 // Take picture with DigiCamControl (name is date & time)
 
                 using (HttpClient client = httpClientFactory.CreateClient())
@@ -69,6 +66,12 @@ namespace Fotobox.Controllers
 
                     var date = DateTime.Now.ToString("dd-MM-yyyy");
                     var time = DateTime.Now.ToString("HH-mm-ss");
+
+                    for (int i = 3; i >= -1; i--)
+                    {
+                        await this.hubContext.Clients.All.ChangeCountdown(i);
+                        Thread.Sleep(TimeSpan.FromSeconds(1));
+                    }
 
                     HttpResponseMessage response = await client.GetAsync($"/?slc=capture&param1={date}&param2={time}");
                     this.singleton.PicturePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), $"{date}_{time}");
