@@ -4,6 +4,6 @@
   {
     bool IsLocked { get; set; }
 
-    string Picture { get; set; }
+    string PicturePath { get; set; }
   }
 }

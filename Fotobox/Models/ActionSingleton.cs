@@ -6,6 +6,6 @@ namespace Fotobox.Models
   {
     public bool IsLocked { get; set; }
 
-    public string Picture { get; set; }
+    public string PicturePath { get; set; }
   }
 }

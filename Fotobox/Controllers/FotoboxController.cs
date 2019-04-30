@@ -10,139 +10,134 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Fotobox.Controllers
 {
-  [Route("api/[controller]/[action]")]
-  [ApiController]
-  public class FotoboxController : ControllerBase
-  {
-    //private DateTime date;
-    private readonly IHubContext<FotoboxHub, IFotoboxClient> hubContext;
-    private readonly IActionSingleton instance;
-    private readonly IHttpClientFactory clientFactory;
-
-    public FotoboxController(IHubContext<FotoboxHub, IFotoboxClient> hubContext, IActionSingleton instance, IHostingEnvironment hostingEnvironment, IHttpClientFactory client)
+    [Route("api/[controller]/[action]")]
+    [ApiController]
+    public class FotoboxController : ControllerBase
     {
-      this.hubContext = hubContext;
-      this.instance = instance;
-      this.clientFactory = client;
-    }
+        //private DateTime date;
+        private readonly IHubContext<FotoboxHub, IFotoboxClient> hubContext;
+        private readonly IActionSingleton singleton;
+        private readonly IHttpClientFactory httpClientFactory;
 
-    [HttpGet]
-    public ActionResult<string> TakePicture()
-    {
-      if (this.instance.IsLocked)
-      {
-        return "wrong";
-      }
+        private readonly string PicturesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Hoellefaescht\\Pictures");
+        private readonly string DeletedPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Hoellefaescht\\Deleted");
 
-      this.instance.IsLocked = true;
-
-      var thread = new Thread(async () =>
-      {
-        // save cached photo
-        if (!string.IsNullOrEmpty(this.instance.Picture))
+        public FotoboxController(IHubContext<FotoboxHub, IFotoboxClient> hubContext, IActionSingleton singleton, IHttpClientFactory httpClientFactory)
         {
-          var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Hoellefaescht\\Pictures");
-          if (!Directory.Exists(path))
-          {
-            Directory.CreateDirectory(path);
-          }
-          System.IO.File.Copy(this.instance.Picture, path);
-          await this.hubContext.Clients.All.Reset("Speichern...");
-          this.instance.Picture = string.Empty;
+            this.hubContext = hubContext;
+            this.singleton = singleton;
+            this.httpClientFactory = httpClientFactory;
         }
 
-        await this.hubContext.Clients.All.Countdown();
-        Thread.Sleep(4000);
-
-        // Take picture with DigiCamControl (name is date & time)
-
-        var client = clientFactory.CreateClient();
-
-        client.BaseAddress = new Uri("http://localhost:5513/");
-        client.DefaultRequestHeaders.Accept.Clear();
-        client.DefaultRequestHeaders.Accept.Add(
-          new MediaTypeWithQualityHeaderValue("application/json"));
-
-        var date = DateTime.Now.ToString("dd-MM-yyyy");
-        var time = DateTime.Now.ToString("HH-mm-ss");
-
-        var response = await client.GetAsync($"/?slc=capture&param1={date}&param2={time}");
-        this.instance.Picture = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), $"{date}_{time}");
-
-        if (!response.IsSuccessStatusCode)
+        private void CopyFile(string sourceFileName, string destinationDirectory)
         {
-          await this.hubContext.Clients.All.Reset(string.Empty);
+            Directory.CreateDirectory(destinationDirectory);
+            string destinationFileName = Path.Combine(destinationDirectory, Path.GetFileName(sourceFileName));
+            System.IO.File.Copy(sourceFileName, destinationFileName, true);
         }
 
-        var content = response.Content;
-
-        Thread.Sleep(2000);
-        await this.hubContext.Clients.All.ReloadPicture();
-
-        this.instance.IsLocked = false;
-        //await this.hubContext.Clients.All.SendAsync("SaveDeletePicture", });
-      });
-
-      thread.Start();
-      return "Wright";
-    }
-
-    [HttpGet]
-    public ActionResult<string> SavePicture()
-    {
-      if (this.instance.IsLocked)
-      {
-        return "wrong";
-      }
-
-      this.instance.IsLocked = true;
-      var thread = new Thread(async () =>
-      {
-        if (!string.IsNullOrEmpty(this.instance.Picture))
+        [HttpGet]
+        public ActionResult<string> TakePicture()
         {
-          var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Hoellefaescht\\Pictures");
-          if (!Directory.Exists(path))
-          {
-            Directory.CreateDirectory(path);
-          }
-          System.IO.File.Copy(this.instance.Picture, path);
-          await this.hubContext.Clients.All.Reset("Speichern...");
-          this.instance.Picture = string.Empty;
+            if (this.singleton.IsLocked)
+            {
+                return BadRequest("wrong");
+            }
+
+            this.singleton.IsLocked = true;
+
+            var thread = new Thread(async () =>
+            {
+                // save cached photo
+                if (!string.IsNullOrEmpty(this.singleton.PicturePath))
+                {
+                    this.CopyFile(this.singleton.PicturePath, PicturesPath);
+                    await this.hubContext.Clients.All.Reset("Speichern...");
+                    this.singleton.PicturePath = string.Empty;
+                }
+
+                await this.hubContext.Clients.All.Countdown();
+                Thread.Sleep(4000);
+
+                // Take picture with DigiCamControl (name is date & time)
+
+                using (HttpClient client = httpClientFactory.CreateClient())
+                {
+                    client.BaseAddress = new Uri("http://localhost:5513/");
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var date = DateTime.Now.ToString("dd-MM-yyyy");
+                    var time = DateTime.Now.ToString("HH-mm-ss");
+
+                    HttpResponseMessage response = await client.GetAsync($"/?slc=capture&param1={date}&param2={time}");
+                    this.singleton.PicturePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), $"{date}_{time}");
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        await this.hubContext.Clients.All.Reset(string.Empty);
+                    }
+
+                    string jsonContent = await response.Content.ReadAsStringAsync();
+
+                    Thread.Sleep(2000);
+                    await this.hubContext.Clients.All.ReloadPicture();
+
+                    this.singleton.IsLocked = false;
+                    //await this.hubContext.Clients.All.SendAsync("SaveDeletePicture", });
+                }
+            });
+
+            thread.Start();
+            return Ok("wright");
         }
-        this.instance.IsLocked = false;
-      });
 
-      thread.Start();
-      return "wright";
-    }
-
-    [HttpGet]
-    public ActionResult<string> DeletePicture()
-    {
-      if (this.instance.IsLocked)
-      {
-        return "wrong";
-      }
-
-      this.instance.IsLocked = true;
-      var thread = new Thread(async () =>
-      {
-        if (!string.IsNullOrEmpty(this.instance.Picture))
+        [HttpGet]
+        public ActionResult<string> SavePicture()
         {
-          var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Hoellefaescht\\Deleted");
-          if (!Directory.Exists(path))
-          {
-            Directory.CreateDirectory(path);
-          }
-          System.IO.File.Copy(this.instance.Picture, path);
-          await this.hubContext.Clients.All.Reset("Löschen...");
-          this.instance.Picture = string.Empty;
-        }
-          this.instance.IsLocked = false;
-      });
+            if (this.singleton.IsLocked)
+            {
+                return BadRequest("wrong");
+            }
 
-      thread.Start();
-      return "wright";
+            this.singleton.IsLocked = true;
+            var thread = new Thread(async () =>
+            {
+                if (!string.IsNullOrEmpty(this.singleton.PicturePath))
+                {
+                    this.CopyFile(this.singleton.PicturePath, PicturesPath);
+                    await this.hubContext.Clients.All.Reset("Speichern...");
+                    this.singleton.PicturePath = string.Empty;
+                }
+                this.singleton.IsLocked = false;
+            });
+
+            thread.Start();
+            return Ok("wright");
+        }
+
+        [HttpGet]
+        public ActionResult<string> DeletePicture()
+        {
+            if (this.singleton.IsLocked)
+            {
+                return BadRequest("wrong");
+            }
+
+            this.singleton.IsLocked = true;
+            var thread = new Thread(async () =>
+            {
+                if (!string.IsNullOrEmpty(this.singleton.PicturePath))
+                {
+                    this.CopyFile(this.singleton.PicturePath, DeletedPath);
+                    await this.hubContext.Clients.All.Reset("Löschen...");
+                    this.singleton.PicturePath = string.Empty;
+                }
+                this.singleton.IsLocked = false;
+            });
+
+            thread.Start();
+            return Ok("wright");
+        }
     }
-  }
 }

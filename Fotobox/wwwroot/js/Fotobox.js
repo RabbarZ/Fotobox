@@ -1,23 +1,22 @@
 ﻿"use strict";
 
-var connection = new signalR.HubConnectionBuilder().withUrl("/fotoboxHub").build();
+const connection = new signalR.HubConnectionBuilder().withUrl("/fotoboxHub").build();
 
+const pictureElement = document.querySelector("#picture");
+const countdownElement = document.querySelector("#countdown");
 
-connection.on("Countdown", function () {
-    StartTimer();
+connection.on("countdown", function () {
+    startTimer();
 });
 
-connection.on("ReloadPicture", function () {
-    //document.getElementById("countdown").innerHTML = "realoaded the mofogger";
-    var element = document.getElementById("picture");
-    element.src = "http://localhost:5513/preview.jpg";
-    element.alt = "Fotobox Foto";
+connection.on("reloadPicture", function () {
+    pictureElement.src = "http://localhost:5513/preview.jpg";
+    pictureElement.alt = "Fotobox Foto";
 });
 
-connection.on("Reset", function (text) {
-    var element = document.getElementById("countdown");
-    element.innerHTML = text;
-    FadeOutText(element);
+connection.on("reset", function (text) {
+    countdownElement.innerHTML = text;
+    fadeOutText(countdownElement);
 });
 
 connection.start().then(function () {
@@ -27,31 +26,31 @@ connection.start().then(function () {
 });
 
 
-function StartTimer() {
+function startTimer() {
     var timeLeft = 3 + 1;
     var downloadTimer = setInterval(function () {
-        document.getElementById("countdown").innerHTML = timeLeft - 1;
+        countdownElement.innerHTML = timeLeft - 1;
         timeLeft -= 1;
         if (timeLeft == 0) {
-            document.getElementById("countdown").innerHTML = "Foto!!";
+            countdownElement.innerHTML = "Foto!!";
         }
         if (timeLeft < 0) {
             clearInterval(downloadTimer);
-            document.getElementById("countdown").innerHTML = "";
+            countdownElement.innerHTML = "";
         }
     }, 1000);
 }
 
-function FadeOutText(fadeTarget) {
+function fadeOutText(target) {
     var fadeEffect = setInterval(function () {
-        if (!fadeTarget.style.opacity) {
-            fadeTarget.style.opacity = 1;
+        if (!target.style.opacity) {
+            target.style.opacity = 1;
         }
-        if (fadeTarget.style.opacity > 0) {
-            fadeTarget.style.opacity -= 0.1;
+        if (target.style.opacity > 0) {
+            target.style.opacity -= 0.1;
         } else {
             clearInterval(fadeEffect);
-            document.getElementById("picture").src = "";
+            pictureElement.src = "";
         }
     }, 200);
 }
