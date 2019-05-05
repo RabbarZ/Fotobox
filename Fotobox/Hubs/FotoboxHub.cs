@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Fotobox.Models;
+﻿using Fotobox.Models;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Fotobox.Hubs

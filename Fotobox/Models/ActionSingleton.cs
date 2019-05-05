@@ -1,5 +1,3 @@
-using System;
-
 namespace Fotobox.Models
 {
   public class ActionSingleton : IActionSingleton

@@ -41,7 +41,7 @@ namespace Fotobox.Controllers
         {
             if (this.singleton.IsLocked)
             {
-                return BadRequest("wrong");
+                return this.BadRequest("wrong");
             }
 
             this.singleton.IsLocked = true;
@@ -51,14 +51,14 @@ namespace Fotobox.Controllers
                 // save cached photo
                 if (!string.IsNullOrEmpty(this.singleton.PicturePath))
                 {
-                    this.CopyFile(this.singleton.PicturePath, PicturesPath);
+                    this.CopyFile(this.singleton.PicturePath, this.PicturesPath);
                     await this.hubContext.Clients.All.Reset("Speichern...");
                     this.singleton.PicturePath = string.Empty;
                 }
 
                 // Take picture with DigiCamControl (name is date & time)
 
-                using (HttpClient client = httpClientFactory.CreateClient())
+                using (HttpClient client = this.httpClientFactory.CreateClient())
                 {
                     client.BaseAddress = new Uri("http://localhost:5513/");
                     client.DefaultRequestHeaders.Accept.Clear();
@@ -92,7 +92,7 @@ namespace Fotobox.Controllers
             });
 
             thread.Start();
-            return Ok("wright");
+            return this.Ok("wright");
         }
 
         [HttpGet]
@@ -100,7 +100,7 @@ namespace Fotobox.Controllers
         {
             if (this.singleton.IsLocked)
             {
-                return BadRequest("wrong");
+                return this.BadRequest("wrong");
             }
 
             this.singleton.IsLocked = true;
@@ -108,7 +108,7 @@ namespace Fotobox.Controllers
             {
                 if (!string.IsNullOrEmpty(this.singleton.PicturePath))
                 {
-                    this.CopyFile(this.singleton.PicturePath, PicturesPath);
+                    this.CopyFile(this.singleton.PicturePath, this.PicturesPath);
                     await this.hubContext.Clients.All.Reset("Speichern...");
                     this.singleton.PicturePath = string.Empty;
                 }
@@ -116,7 +116,7 @@ namespace Fotobox.Controllers
             });
 
             thread.Start();
-            return Ok("wright");
+            return this.Ok("wright");
         }
 
         [HttpGet]
@@ -124,7 +124,7 @@ namespace Fotobox.Controllers
         {
             if (this.singleton.IsLocked)
             {
-                return BadRequest("wrong");
+                return this.BadRequest("wrong");
             }
 
             this.singleton.IsLocked = true;
@@ -132,7 +132,7 @@ namespace Fotobox.Controllers
             {
                 if (!string.IsNullOrEmpty(this.singleton.PicturePath))
                 {
-                    this.CopyFile(this.singleton.PicturePath, DeletedPath);
+                    this.CopyFile(this.singleton.PicturePath, this.DeletedPath);
                     await this.hubContext.Clients.All.Reset("Löschen...");
                     this.singleton.PicturePath = string.Empty;
                 }
@@ -140,7 +140,7 @@ namespace Fotobox.Controllers
             });
 
             thread.Start();
-            return Ok("wright");
+            return this.Ok("wright");
         }
     }
 }
