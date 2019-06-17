@@ -1,9 +1,14 @@
-﻿namespace Fotobox.Models
-{
-  public interface IActionSingleton
-  {
-    bool IsLocked { get; set; }
+﻿using System;
+using System.Collections.Generic;
 
-    string PicturePath { get; set; }
-  }
+namespace Fotobox.Models
+{
+    public interface IActionSingleton
+    {
+        bool IsLocked { get; set; }
+
+        string PicturePath { get; set; }
+
+        List<TimeSpan> TimeOccured { get; set; }
+    }
 }

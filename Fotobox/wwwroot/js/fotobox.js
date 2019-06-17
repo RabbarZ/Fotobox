@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     connection.on("changeCountdown", function (number) {
         if (number == 0) {
-            countdownElement.innerHTML = "Foto!!"
+            countdownElement.innerHTML = "Foto!!";
         }
         else if (number == -1) {
             countdownElement.innerHTML = "";
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
         else {
             countdownElement.innerHTML = number;
         }
-    })
+    });
 
     connection.on("reloadPicture", function () {
         pictureElement.src = "http://localhost:5513/preview.jpg";
@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     connection.on("reset", function (text) {
         countdownElement.innerHTML = text;
+        countdownElement.style.opacity = 0;
         fadeOutText(countdownElement);
     });
 

@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
+using System.Threading.Tasks;
 using Fotobox.Hubs;
 using Fotobox.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -21,19 +24,25 @@ namespace Fotobox.Controllers
 
         private readonly string PicturesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Hoellefaescht\\Pictures");
         private readonly string DeletedPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Hoellefaescht\\Deleted");
+        private readonly string DigiCamControlPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "digiCamControl", "Session1");
 
         public FotoboxController(IHubContext<FotoboxHub, IFotoboxClient> hubContext, IActionSingleton singleton, IHttpClientFactory httpClientFactory)
         {
             this.hubContext = hubContext;
             this.singleton = singleton;
             this.httpClientFactory = httpClientFactory;
+            this.singleton.TimeOccured = new List<TimeSpan>();
         }
 
         private void CopyFile(string sourceFileName, string destinationDirectory)
         {
             Directory.CreateDirectory(destinationDirectory);
             string destinationFileName = Path.Combine(destinationDirectory, Path.GetFileName(sourceFileName));
-            System.IO.File.Copy(sourceFileName, destinationFileName, true);
+
+            if (System.IO.File.Exists(destinationFileName))
+            {
+                System.IO.File.Copy(sourceFileName, destinationFileName, true);
+            }
         }
 
         [HttpGet]
@@ -67,14 +76,19 @@ namespace Fotobox.Controllers
                     var date = DateTime.Now.ToString("dd-MM-yyyy");
                     var time = DateTime.Now.ToString("HH-mm-ss");
 
-                    for (int i = 3; i >= -1; i--)
+                    var countdownThread = new Thread(async () =>
                     {
-                        await this.hubContext.Clients.All.ChangeCountdown(i);
-                        Thread.Sleep(TimeSpan.FromSeconds(1));
-                    }
+                        for (int i = 3; i >= -1; i--)
+                        {
+                            await this.hubContext.Clients.All.ChangeCountdown(i);
+                            Thread.Sleep(TimeSpan.FromSeconds(1));
+                        }
+                    });
+                    countdownThread.Start();
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
 
                     HttpResponseMessage response = await client.GetAsync($"/?slc=capture&param1={date}&param2={time}");
-                    this.singleton.PicturePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), $"{date}_{time}");
+                    this.singleton.PicturePath = Path.Combine(this.DigiCamControlPath, $"{date} {time}.jpg");
 
                     if (!response.IsSuccessStatusCode)
                     {
@@ -141,6 +155,38 @@ namespace Fotobox.Controllers
 
             thread.Start();
             return this.Ok("wright");
+        }
+
+        [HttpGet]
+        public ActionResult<string> TestDigiCamControl()
+        {
+            var thread = new Thread(async () =>
+            {
+                using (HttpClient client = this.httpClientFactory.CreateClient())
+                {
+                    client.BaseAddress = new Uri("http://localhost:5513/");
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var date = DateTime.Now.ToString("dd-MM-yyyy");
+                    var time = DateTime.Now.ToString("HH-mm-ss");
+
+                    var dateTime = DateTime.Now;
+                    HttpResponseMessage response = await client.GetAsync($"/?slc=capture&param1={date}&param2={time}");
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                    }
+                    string jsonContent = await response.Content.ReadAsStringAsync();
+                    this.singleton.TimeOccured.Add(DateTime.Now - dateTime);
+                    var sdsd = new Stopwatch();
+                    var erih = sdsd.Elapsed;
+                    await this.hubContext.Clients.All.ReloadPicture();
+                }
+            });
+            thread.Start();
+
+            return "";
         }
     }
 }
