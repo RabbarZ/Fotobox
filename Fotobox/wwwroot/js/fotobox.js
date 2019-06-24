@@ -21,13 +21,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     connection.on("reloadPicture", function () {
         pictureElement.src = "http://localhost:5513/preview.jpg";
-        pictureElement.alt = "Fotobox Foto";
     });
 
     connection.on("reset", function (text) {
-        countdownElement.innerHTML = text;
-        countdownElement.style.opacity = 0;
-        fadeOutText(countdownElement);
+        // countdownElement.innerHTML = text;
+        // countdownElement.style.opacity = 0;
+        // fadeOutText(countdownElement);
+
+        pictureElement.src = "";
     });
 
     connection.start().then(function () {
