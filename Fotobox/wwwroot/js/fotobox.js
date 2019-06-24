@@ -19,8 +19,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    connection.on("reloadPicture", function () {
-        pictureElement.src = "http://localhost:5513/preview.jpg";
+    connection.on("reloadPicture", function (path) {
+        pictureElement.src = path;
     });
 
     connection.on("reset", function (text) {

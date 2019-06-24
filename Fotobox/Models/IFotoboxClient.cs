@@ -6,7 +6,7 @@ namespace Fotobox.Models
     {
         Task ChangeCountdown(int number);
 
-        Task ReloadPicture();
+        Task ReloadPicture(string path);
 
         Task Reset(string text);
     }
