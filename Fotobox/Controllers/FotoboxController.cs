@@ -76,12 +76,7 @@ namespace Fotobox.Controllers
 
             HttpResponseMessage response = await client.GetAsync($"/?slc=capture&param1={date}&param2={time}");
             this.singleton.PicturePath = Path.Combine(this.digiCamControlPath, $"{date} {time}.jpg");
-
-            if (!response.IsSuccessStatusCode)
-            {
-              await this.hubContext.Clients.All.Reset(string.Empty);
-            }
-
+            
             // string jsonContent = await response.Content.ReadAsStringAsync();
 
             Thread.Sleep(2000);
@@ -173,9 +168,6 @@ namespace Fotobox.Controllers
 
             HttpResponseMessage response = await client.GetAsync($"/?slc=capture&param1={date}&param2={time}");
 
-            if (!response.IsSuccessStatusCode)
-            {
-            }
             // string jsonContent = await response.Content.ReadAsStringAsync();
             await this.hubContext.Clients.All.ReloadPicture();
           }
