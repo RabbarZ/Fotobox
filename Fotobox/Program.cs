@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore;
+﻿using System.IO;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
 namespace Fotobox
@@ -12,6 +13,9 @@ namespace Fotobox
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                /*.UseKestrel()
+                .UseIISIntegration()*/
                 .UseStartup<Startup>();
     }
 }
