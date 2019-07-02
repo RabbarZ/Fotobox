@@ -16,6 +16,6 @@ namespace Fotobox
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 /*.UseKestrel()
                 .UseIISIntegration()*/
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()/*.UseUrls("http://10.138.1.181:5000", "http://10.138.1.181:5001", "http://localhost:5000", "http://localhost:5001")*/;
     }
 }
