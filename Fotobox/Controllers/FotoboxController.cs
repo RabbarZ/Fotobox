@@ -8,6 +8,7 @@ using Fotobox.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Configuration;
 
 namespace Fotobox.Controllers
 {
@@ -23,9 +24,9 @@ namespace Fotobox.Controllers
         private readonly string copyPath;
         private readonly string savedPath;
         private readonly string deletedPath;
-        private readonly string digiCamControlPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "digiCamControl", "Session1");
+        private readonly string digiCamControlPath;
 
-        public FotoboxController(IHubContext<FotoboxHub, IFotoboxClient> hubContext, IActionSingleton singleton, IHttpClientFactory httpClientFactory, IHostingEnvironment environment)
+        public FotoboxController(IHubContext<FotoboxHub, IFotoboxClient> hubContext, IActionSingleton singleton, IHttpClientFactory httpClientFactory, IHostingEnvironment environment, IConfiguration configuration)
         {
             this.hubContext = hubContext;
             this.singleton = singleton;
@@ -34,6 +35,7 @@ namespace Fotobox.Controllers
             this.copyPath = Path.Combine(pictureFolderPath, "Copy");
             this.savedPath = Path.Combine(pictureFolderPath, "Saved");
             this.deletedPath = Path.Combine(pictureFolderPath, "Deleted");
+            this.digiCamControlPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "digiCamControl", configuration["Session"]);
         }
 
         [HttpGet]
@@ -86,7 +88,7 @@ namespace Fotobox.Controllers
                         this.singleton.PicturePath = this.CopyFile(Path.Combine(this.digiCamControlPath, $"{date}_{time}.jpg"), this.copyPath);
                         // string jsonContent = await response.Content.ReadAsStringAsync();
 
-                        await this.hubContext.Clients.All.ReloadPicture(this.singleton.PicturePath);
+                        this.ReloadPicture();
 
                         this.singleton.IsLocked = false;
                         //await this.hubContext.Clients.All.SendAsync("SaveDeletePicture", });
@@ -175,7 +177,7 @@ namespace Fotobox.Controllers
                         await client.GetAsync($"/?slc=capture&param1={date}&param2={time}");
 
                         // string jsonContent = await response.Content.ReadAsStringAsync();
-                        await this.hubContext.Clients.All.ReloadPicture(this.singleton.PicturePath);
+                        this.ReloadPicture();
                     }
                     catch (Exception e)
                     {
@@ -208,6 +210,11 @@ namespace Fotobox.Controllers
             {
                 System.IO.File.Delete(sourceFileName);
             }
+        }
+
+        private async void ReloadPicture()
+        {
+            await this.hubContext.Clients.All.ReloadPicture(this.singleton.PicturePath.Split("wwwroot")[1]);
         }
     }
 }
