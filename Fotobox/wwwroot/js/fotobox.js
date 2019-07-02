@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", function () {
             countdownElement.innerHTML = "Foto!!";
         }
         else if (number == -1) {
+            //setTimeout(function () {
+            //}, 500);
             countdownElement.innerHTML = "";
         }
         else {

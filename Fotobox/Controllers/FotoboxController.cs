@@ -83,7 +83,7 @@ namespace Fotobox.Controllers
                             }
                         });
                         countdownThread.Start();
-                        Thread.Sleep(TimeSpan.FromSeconds(2.3));
+                        Thread.Sleep(TimeSpan.FromSeconds(2.5));
 
                         await client.GetAsync($"/?slc=capture&param1={date}_{time}");
                         Thread.Sleep(2000);
