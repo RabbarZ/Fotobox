@@ -36,6 +36,9 @@ namespace Fotobox.Controllers
             this.savedPath = Path.Combine(pictureFolderPath, "Saved");
             this.deletedPath = Path.Combine(pictureFolderPath, "Deleted");
             this.digiCamControlPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "digiCamControl", configuration["Session"]);
+            /*var asd = Path.Combine(pictureFolderPath, $"{new Random().Next(1, 4)}.png");
+            var sd = asd.Split("wwwroot")[1];
+            this.hubContext.Clients.All.ReloadPicture(sd);*/
         }
 
         [HttpGet]
