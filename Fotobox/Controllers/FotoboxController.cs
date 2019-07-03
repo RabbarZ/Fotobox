@@ -37,7 +37,7 @@ namespace Fotobox.Controllers
       this.savedPathRelative = Path.Combine(pictureFolderPath, "Saved");
       this.deletedPathRelative = Path.Combine(pictureFolderPath, "Deleted");
       this.digiCamControlPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "digiCamControl", configuration["Session"]);
-      
+
       // var asd = Path.GetFullPath("wwwroot/hoellefaesch/copy");
       // var asd1 = Path.GetFullPath("/wwwroot/hoellefaesch/copy");
       // var asd2 = Path.GetFullPath("./wwwroot/hoellefaesch/copy");
@@ -84,7 +84,7 @@ namespace Fotobox.Controllers
               }
             });
             countdownThread.Start();
-            Thread.Sleep(TimeSpan.FromSeconds(2.3));
+            Thread.Sleep(TimeSpan.FromSeconds(2.5));
 
             await client.GetAsync($"/?slc=capture&param1={date}_{time}");
             Thread.Sleep(2000);
