@@ -79,12 +79,25 @@ namespace Fotobox.Controllers
             {
               for (int i = 3; i >= -1; i--)
               {
-                await this.hubContext.Clients.All.ChangeCountdown(i);
+                if (i == 0)
+                {
+                  await this.hubContext.Clients.All.ShowText("Foto!!");
+                  Thread.Sleep(TimeSpan.FromSeconds(1));
+                }
+                else if (i == -1)
+                {
+                  await this.hubContext.Clients.All.ShowText("Foto wird verarbeitet...");
+                }
+                else
+                {
+                  await this.hubContext.Clients.All.ShowText(i.ToString());
+                }
+
                 Thread.Sleep(TimeSpan.FromSeconds(1));
               }
             });
             countdownThread.Start();
-            Thread.Sleep(TimeSpan.FromSeconds(2.5));
+            Thread.Sleep(TimeSpan.FromSeconds(2.6));
 
             await client.GetAsync($"/?slc=capture&param1={date}_{time}");
             Thread.Sleep(2000);
@@ -93,7 +106,7 @@ namespace Fotobox.Controllers
 
             this.CopyFile(Path.Combine(this.digiCamControlPath, fileName), this.copyPathRelative);
             this.singleton.PicturePath = Path.Combine(this.copyPathRelative, fileName);
-            this.ReloadPicture();
+            await this.hubContext.Clients.All.ReloadPicture(this.singleton.PicturePath.Split("wwwroot")[1]);
 
             this.singleton.IsLocked = false;
           }
@@ -154,11 +167,12 @@ namespace Fotobox.Controllers
 
     private async void SavePictureLocal()
     {
+      // await this.hubContext.Clients.All.Reset("Foto gespeichert.\nBuzzer drücken um Foto zu machen.");
       if (!string.IsNullOrEmpty(this.singleton.PicturePath))
       {
         this.CopyFile(this.singleton.PicturePath, this.savedPathRelative);
         this.singleton.PicturePath = string.Empty;
-        await this.hubContext.Clients.All.Reset("Speichern...");
+        await this.hubContext.Clients.All.Reset("Foto gespeichert.\nBuzzer drücken um Foto zu machen.");
       }
     }
 
@@ -169,7 +183,7 @@ namespace Fotobox.Controllers
         this.CopyFile(this.singleton.PicturePath, this.deletedPathRelative);
         this.DeleteFile(this.singleton.PicturePath);
         this.singleton.PicturePath = string.Empty;
-        await this.hubContext.Clients.All.Reset("Löschen...");
+        await this.hubContext.Clients.All.Reset("Foto gelöscht.\nBuzzer drücken um Foto zu machen.");
       }
     }
 
@@ -189,11 +203,6 @@ namespace Fotobox.Controllers
         var destinationFileName = Path.Combine(destinationDirectory, Path.GetFileName(sourceFileName));
         System.IO.File.Copy(sourceFileName, destinationFileName, true);
       }
-    }
-
-    private async void ReloadPicture()
-    {
-      await this.hubContext.Clients.All.ReloadPicture(this.singleton.PicturePath.Split("wwwroot")[1]);
     }
   }
 }

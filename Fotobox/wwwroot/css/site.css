@@ -3,12 +3,32 @@
     margin: 0;
 }
 
+/*.countdown-container {
+    vertical-align: middle;
+}
+
 #countdown {
     display: block;
     margin: 0 auto;
     font-size: 50px;
+}*/
+
+.text-container {
+    max-height: 100%;
+    vertical-align: middle;
 }
 
+#text {
+    text-align: center;
+    font-size: 50px;
+    vertical-align: middle;
+}
+
+.frame {
+    text-align: center;
+}
+
+
 #picture {
-    width: 100%;
+    max-width: 80%;
 }
