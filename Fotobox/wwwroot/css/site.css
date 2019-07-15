@@ -1,7 +1,31 @@
 ﻿body {
-    font-family: sans-serif;
+    height: 100%;
     margin: 0;
+    padding: 0;
+    /*font-size: 50px;*/
+    font-family: sans-serif;
 }
+
+.fotobox-container {
+    height: 100vh;
+    text-align: center;
+}
+
+    .fotobox-container img {
+        max-height: 80%;
+    }
+
+    .fotobox-container h1 {
+        /*margin: auto;*/
+        /*vertical-align: central;*/
+        height: 100%;
+        font-size: 50px;
+    }
+
+/*.text-container {
+    max-height: 100%;
+    vertical-align: middle;
+}*/
 
 /*.countdown-container {
     vertical-align: middle;
@@ -13,22 +37,17 @@
     font-size: 50px;
 }*/
 
-.text-container {
-    max-height: 100%;
-    vertical-align: middle;
-}
-
-#text {
+/*#text {
     text-align: center;
     font-size: 50px;
     vertical-align: middle;
-}
+}*/
 
-.frame {
+/*.frame {
     text-align: center;
-}
+}*/
 
 
-#picture {
+/*#picture {
     max-width: 80%;
-}
+}*/

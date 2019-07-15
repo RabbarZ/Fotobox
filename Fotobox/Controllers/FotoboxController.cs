@@ -72,8 +72,6 @@ namespace Fotobox.Controllers
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            var date = DateTime.Now.ToString("dd-MM-yyyy");
-            var time = DateTime.Now.ToString("HH-mm-ss");
 
             var countdownThread = new Thread(async () =>
             {
@@ -98,6 +96,9 @@ namespace Fotobox.Controllers
             });
             countdownThread.Start();
             Thread.Sleep(TimeSpan.FromSeconds(2.6));
+            
+            var date = DateTime.Now.ToString("dd-MM-yyyy");
+            var time = DateTime.Now.ToString("HH-mm-ss");
 
             await client.GetAsync($"/?slc=capture&param1={date}_{time}");
             Thread.Sleep(2000);
