@@ -12,15 +12,42 @@
 }
 
     .fotobox-container img {
-        max-height: 80%;
+        position: relative;
+        height: 80%;
+        vertical-align: bottom;
     }
 
     .fotobox-container h1 {
+        position: relative;
         /*margin: auto;*/
-        /*vertical-align: central;*/
-        height: 100%;
+        vertical-align: middle;
         font-size: 50px;
     }
+
+.fotobox-buttons {
+    text-align: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+
+.fotobox-buttons h2 {
+    writing-mode: vertical-lr;
+    height: 100%;
+    font-size: 40px;
+    transform: rotate(-180deg);
+}
+
+#save {
+    float: left;
+}
+
+#delete {
+    float: right;
+}
 
 /*.text-container {
     max-height: 100%;
