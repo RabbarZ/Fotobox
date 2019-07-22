@@ -100,13 +100,14 @@ namespace Fotobox.Controllers
             var date = DateTime.Now.ToString("dd-MM-yyyy");
             var time = DateTime.Now.ToString("HH-mm-ss");
 
-            await client.GetAsync($"/?slc=capture&param1={date}_{time}");
+            /*await client.GetAsync($"/?slc=capture&param1={date}_{time}");
             Thread.Sleep(2000);
 
             var fileName = $"{date}_{time}.jpg";
 
             this.CopyFile(Path.Combine(this.digiCamControlPath, fileName), this.copyPathRelative);
-            this.singleton.PicturePath = Path.Combine(this.copyPathRelative, fileName);
+            this.singleton.PicturePath = Path.Combine(this.copyPathRelative, fileName);*/
+            this.singleton.PicturePath = @"C:\Users\huerlik2\source\Workspace\Fotobox\Fotobox\wwwroot\asd.png";
             await this.hubContext.Clients.All.ReloadPicture(this.singleton.PicturePath.Split("wwwroot")[1]);
 
             this.singleton.IsLocked = false;

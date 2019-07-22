@@ -3,7 +3,9 @@
     margin: 0;
     padding: 0;
     /*font-size: 50px;*/
-    font-family: sans-serif;
+    color: red;
+    background-color: black;
+    font-family: 'Reporter-Two';
 }
 
 .fotobox-container {
@@ -12,13 +14,16 @@
 }
 
     .fotobox-container img {
-        max-height: 80%;
+        max-height: 85%;
     }
 
     .fotobox-container h1 {
+        font-size: 50px;
+    }
+
+    .fotobox-container h2 {
         /*margin: auto;*/
-        /*vertical-align: central;*/
-        height: 100%;
+        vertical-align: central;
         font-size: 50px;
     }
 
