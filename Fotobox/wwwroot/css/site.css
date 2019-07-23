@@ -2,57 +2,31 @@
     height: 100%;
     margin: 0;
     padding: 0;
-    /*font-size: 50px;*/
     color: red;
     background-color: black;
     font-family: 'Reporter-Two';
 }
 
 .fotobox-container {
+    background-color: black;
+    background-image: url(/c.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
     height: 100vh;
     text-align: center;
 }
 
-    .fotobox-container img {
-        max-height: 85%;
-    }
-
-    .fotobox-container h1 {
-        font-size: 50px;
-    }
-
-    .fotobox-container h2 {
-        /*margin: auto;*/
-        vertical-align: central;
-        font-size: 50px;
-    }
-
-/*.text-container {
-    max-height: 100%;
-    vertical-align: middle;
-}*/
-
-/*.countdown-container {
-    vertical-align: middle;
+.fotobox-clear {
+    height: 85%;
 }
 
-#countdown {
-    display: block;
-    margin: 0 auto;
-    font-size: 50px;
-}*/
+.fotobox-footer {
+    height: 15%;
+    background-color: rgba(255, 255, 255, 0.4);
+}
 
-/*#text {
-    text-align: center;
-    font-size: 50px;
-    vertical-align: middle;
-}*/
-
-/*.frame {
-    text-align: center;
-}*/
-
-
-/*#picture {
-    max-width: 80%;
-}*/
+    .fotobox-footer h1 {
+        font-size: 50px;
+        margin: 0;
+    }

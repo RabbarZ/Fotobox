@@ -3,31 +3,21 @@
 document.addEventListener("DOMContentLoaded", function () {
     const connection = new signalR.HubConnectionBuilder().withUrl("/fotoboxHub").build();
 
-    const pictureElement = document.querySelector("#picture");
+    const fotoboxContainer = document.querySelector(".fotobox-container");
     const textElement = document.querySelector("#text");
 
     connection.on("showText", function (text) {
-        textElement.style.opacity = 1;
-        pictureElement.style.opacity = 0;
-
         textElement.innerHTML = text;
-        pictureElement.src = "";
     });
 
     connection.on("reloadPicture", function (path) {
-        textElement.style.opacity = 1;
-        pictureElement.style.opacity = 1;
+        fotoboxContainer.style.backgroundImage = "url(" + path + ")";
 
-        pictureElement.src = path;
         textElement.innerHTML = "Foto speichern oder löschen...";
     });
 
     connection.on("reset", function (text) {
-        textElement.style.opacity = 1;
-        pictureElement.style.opacity = 0;
-
         textElement.innerHTML = text;
-        pictureElement.src = "";
     });
 
     connection.start().then(function () {

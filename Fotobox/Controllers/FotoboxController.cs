@@ -173,7 +173,7 @@ namespace Fotobox.Controllers
       {
         this.CopyFile(this.singleton.PicturePath, this.savedPathRelative);
         this.singleton.PicturePath = string.Empty;
-        await this.hubContext.Clients.All.Reset("Foto gespeichert.\nBuzzer drücken um Foto zu machen.");
+        await this.hubContext.Clients.All.ShowText("Foto gespeichert.\nBuzzer drücken um Foto zu machen.");
       }
     }
 
@@ -184,7 +184,7 @@ namespace Fotobox.Controllers
         this.CopyFile(this.singleton.PicturePath, this.deletedPathRelative);
         this.DeleteFile(this.singleton.PicturePath);
         this.singleton.PicturePath = string.Empty;
-        await this.hubContext.Clients.All.Reset("Foto gelöscht.\nBuzzer drücken um Foto zu machen.");
+        await this.hubContext.Clients.All.ShowText("Foto gelöscht.\nBuzzer drücken um Foto zu machen.");
       }
     }
 

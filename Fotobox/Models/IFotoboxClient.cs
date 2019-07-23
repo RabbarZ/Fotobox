@@ -7,7 +7,5 @@ namespace Fotobox.Models
         Task ShowText(string text);
 
         Task ReloadPicture(string path);
-
-        Task Reset(string text);
     }
 }
