@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
         pictureElement.style.opacity = 1;
 
         pictureElement.src = path;
-        textElement.value = "Foto speichern oder löschen...";
+        textElement.innerHTML = "Foto speichern oder löschen...";
     });
 
     connection.on("reset", function (text) {
