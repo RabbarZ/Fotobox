@@ -4,12 +4,13 @@
     padding: 0;
     color: red;
     background-color: black;
-    font-family: 'Reporter-Two';
+    /*font-family: 'Reporter-Two';*/
+    font-family: sans-serif;
 }
 
 .fotobox-container {
     background-color: black;
-    background-image: url(/c.png);
+    background-image: url(/nice2.jpg);
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center;
@@ -23,10 +24,11 @@
 
 .fotobox-footer {
     height: 15%;
-    background-color: rgba(255, 255, 255, 0.4);
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
     .fotobox-footer h1 {
-        font-size: 50px;
+        font-size: 80px;
+        line-height: 15vh;
         margin: 0;
     }
