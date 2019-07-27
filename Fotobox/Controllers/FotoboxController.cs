@@ -99,11 +99,12 @@ namespace Fotobox.Controllers
             
             var date = DateTime.Now.ToString("dd-MM-yyyy");
             var time = DateTime.Now.ToString("HH-mm-ss");
+            var prefix = "fotobox";
 
-            await client.GetAsync($"/?slc=capture&param1={date}_{time}");
+            await client.GetAsync($"/?slc=capture&param1={prefix}_{date}_{time}");
             Thread.Sleep(2000);
 
-            var fileName = $"{date}_{time}.jpg";
+            var fileName = $"{prefix}_{date}_{time}.jpg";
 
             this.CopyFile(Path.Combine(this.digiCamControlPath, fileName), this.copyPathRelative);
             this.singleton.PicturePath = Path.Combine(this.copyPathRelative, fileName);
