@@ -108,7 +108,7 @@ namespace Fotobox.Controllers
 
             this.CopyFile(Path.Combine(this.digiCamControlPath, fileName), this.copyPathRelative);
             this.singleton.PicturePath = Path.Combine(this.copyPathRelative, fileName);
-            await this.hubContext.Clients.All.ReloadPicture(this.singleton.PicturePath.Split("wwwroot")[1]);
+            await this.hubContext.Clients.All.ReloadPicture(this.singleton.PicturePath.Split("wwwroot")[1].Replace("\\", "/"));
 
             this.singleton.IsLocked = false;
           }
