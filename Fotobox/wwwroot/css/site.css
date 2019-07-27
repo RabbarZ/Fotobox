@@ -28,7 +28,7 @@
 }
 
     .fotobox-footer h1 {
-        font-size: 60px;
+        font-size: 40px; /* 40px because save/delete text is too big */
         line-height: 15vh;
         margin: 0;
     }
