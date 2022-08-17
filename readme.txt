@@ -25,3 +25,7 @@ Setup Router
 - Set password of Wlan (Whatsapp)
 - DHCP -> address reservation: Bind Mac-address of NUC to 192.168.0.101 (see above, the raspi calls this ip (http request on NUC))
        -> address reservation for raspi is not needed (he only needs to know the ip of the NUC not vice versa)
+
+When the NUC is set to factory settings (neu aufsetzen)
+    -> right click desktop and start grafics application from intel
+    select screen and on the left side choose "tv neu" or simmilar
