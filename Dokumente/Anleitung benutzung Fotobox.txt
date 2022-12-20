@@ -1,0 +1,23 @@
+1. Router an strom anschliessen -> warten 1 minute
+2. Laptop W-Lan anschauen -> NETGEAR-Test sollte verbunden sein (ansonsten verbinden und kurz warten)
+3. digiCamControl auf dem Desktop starten
+4. Fotobox.exe starten
+  -> warten (evtl 20-30 sekunden, normalerweise aber nur 5 sec) bis entweder ein fenster kommt, welches zugriff will (firewall) -> unbedingt zulassen
+  -> oder es kann sein, dass dieses firewall fenster nicht kommt und es direkt funktioniert.
+
+So oder so sollte am schluss in der Fotobox.exe kommandozeile (schwarz mit weissem text) folgendes stehen:
+
+Hosting environment: Production
+Content root path: C:\Users\Kilian\source\Workspace\Fotobox\Fotobox\bin\Release\netcoreapp2.2\win10-x64\publish
+Now listening on: http://[::]:5000
+Now listening on: https://[::]:5001
+Now listening on: http://[::]:51327
+Now listening on: https://[::]:44391
+Application started. Press Ctrl+C to shut down.
+
+
+5. google chrome öffnen, neuer tab öffnen und Fotobox webseite öffnen
+6. Buzzer einstecken -> 30 sec warten
+
+laptop: windows taste + P -> duplizieren
+im google chrome f11 taste drücken
